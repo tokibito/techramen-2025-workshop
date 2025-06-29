@@ -1,0 +1,14 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Workshop PostgreSQL",
+      "Group": "Servers",
+      "Host": "postgres",
+      "Port": 5432,
+      "MaintenanceDB": "workshop_db",
+      "Username": "workshop",
+      "SSLMode": "prefer",
+      "Comment": "TechRAMEN 2025 Workshop Database"
+    }
+  }
+}
