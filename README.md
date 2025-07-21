@@ -102,7 +102,6 @@ docker compose up -d
 
 **tokibito**
 - Pythonエンジニア
-- データベース設計・SQL指導経験豊富
 
 ## ドキュメントのビルド
 
