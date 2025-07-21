@@ -4,18 +4,17 @@ TechRAMEN 2025カンファレンスで行われるSQLワークショップ（40�
 
 ## 概要
 
-このワークショップでは、SQLの中でも特に重要なJOIN操作とGROUP BY句に焦点を当てて学習します。中学校の成績管理システムを題材に、実践的なSQLクエリの書き方を身につけます。
+このワークショップでは、SQLの中でも特に重要なJOIN操作とGROUP BY句に焦点を当てて学習します。中学校の成績管理システムのデータを題材に、SQLクエリの書き方を身につけます。
 
 ### 対象者
 
-- SQLの基礎を学びたい方
+- SQLでSELECT文を使ったことがある方(WHERE句やORDER BY句もやったことがあれば尚良し)
 - JOINやGROUP BYの使い方を理解したい方
-- 実務で使えるSQLスキルを身につけたい方
 
 ### 学習内容（40分）
 
-1. **導入（3分）**
-   - データベースの説明
+1. **導入（5分）**
+   - 今回使う環境の説明
 
 2. **JOIN編（15分）**
    - なぜJOINが必要か
@@ -27,16 +26,19 @@ TechRAMEN 2025カンファレンスで行われるSQLワークショップ（40�
    - 実用的な集計例
    - クラス別成績表の作成
 
-4. **質疑応答（7分）**
+4. **質疑応答（5分）**
 
 ## 環境構築
 
-### 必要なソフトウェア
+### ホスティングされた環境を使う場合
 
-- Docker Desktop（Windows/Mac）またはDocker Engine + Docker Compose（Linux）
-- Webブラウザ
+- Webブラウザで当日共有されたURLにアクセスしてください。
 
-### セットアップ手順
+### ローカル環境でのセットアップ
+
+- 必要なソフトウェア
+   - Docker Desktop（Windows/Mac）またはDocker Engine + Docker Compose（Linux）
+   - Webブラウザ
 
 1. リポジトリのクローンまたはダウンロード
 ```bash
@@ -68,24 +70,28 @@ docker-compose up -d
 ```
 .
 ├── docker/          # Docker Compose設定
-│   ├── docker-compose.yml
+│   ├── compose.yml
 │   └── init.sql    # 初期データ
 ├── sql/            # SQLサンプルファイル
 │   ├── basics/     # 基礎編
 │   ├── joins/      # JOIN編
 │   └── groupby/    # GROUP BY編
 ├── docs/           # ワークショップドキュメント
-│   ├── workshop_guide.md  # 進行ガイド
-│   └── handout.md        # 配布資料
+│   └── index.rst   # 目次
 └── solutions/      # 演習問題の解答
 ```
 
 ## トラブルシューティング
 
+### docker composeコマンドが見つからない場合
+- Dockerが正しくインストールされているか確認してください。
+- docker-composeがインストールされているか確認してください。
+   - `docker-compose` コマンドがあるなら、そちらで実行してください。
+
 ### Dockerコンテナが起動しない場合
 ```bash
-docker-compose down -v
-docker-compose up -d
+docker compose down -v
+docker compose up -d
 ```
 
 ### pgAdminに接続できない場合
@@ -97,6 +103,28 @@ docker-compose up -d
 **tokibito**
 - Pythonエンジニア
 - データベース設計・SQL指導経験豊富
+
+## ドキュメントのビルド
+
+ドキュメントはSphinxを使用してビルドできます。
+
+1. venvを作成
+```bash
+python3 -m venv venv
+source venv/bin/activate  # Windowsの場合は venv\Scripts\activate
+```
+
+2. 必要なパッケージのインストール
+```bash
+pip install -r docs/requirements.txt
+```
+
+3. ドキュメントのビルド
+```bash
+make html
+```
+
+ビルド結果は `docs/_build/html/` に出力されます。
 
 ## ライセンス
 
