@@ -24,14 +24,44 @@ INNER JOINの基本
 生徒とクラスを結合する
 ----------------------
 
-生徒の名前とクラス名を一緒に取得してみます：
+生徒の名前とクラス名を一緒に取得してみます。
+
+まず、どのようにテーブルが結合されるかを図で確認しましょう：
+
+.. mermaid::
+
+   graph LR
+       subgraph "studentsテーブル"
+           S1[student_id: 1<br/>name: 山田太郎<br/>class_id: 1]
+           S2[student_id: 2<br/>name: 佐藤花子<br/>class_id: 1]
+           S3[student_id: 3<br/>name: 鈴木一郎<br/>class_id: 2]
+       end
+       
+       subgraph "classesテーブル"
+           C1[class_id: 1<br/>grade: 1<br/>class_name: A]
+           C2[class_id: 2<br/>grade: 1<br/>class_name: B]
+       end
+       
+       S1 -.->|class_id = 1| C1
+       S2 -.->|class_id = 1| C1
+       S3 -.->|class_id = 2| C2
+       
+       style S1 fill:#e8f4fd
+       style S2 fill:#e8f4fd
+       style S3 fill:#e8f4fd
+       style C1 fill:#ffeaa7
+       style C2 fill:#ffeaa7
+
+この図のように、studentsテーブルのclass_idとclassesテーブルのclass_idが一致するレコードが結合されます。
+
+実際のSQLクエリ：
 
 .. code-block:: sql
 
    SELECT 
-       students.name AS 生徒名,
-       classes.grade AS 学年,
-       classes.class_name AS クラス名
+       students.name AS "生徒名",
+       classes.grade AS "学年",
+       classes.class_name AS "クラス名"
    FROM students
    INNER JOIN classes ON students.class_id = classes.class_id
    ORDER BY classes.grade, classes.class_name, students.name
@@ -51,9 +81,9 @@ INNER JOINの基本
 .. code-block:: sql
 
    SELECT 
-       students.name AS 生徒名,
-       subjects.subject_name AS 教科,
-       scores.score AS 点数
+       students.name AS "生徒名",
+       subjects.subject_name AS "教科",
+       scores.score AS "点数"
    FROM scores
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN subjects ON scores.subject_id = subjects.subject_id
@@ -69,17 +99,43 @@ INNER JOINの基本
 4つのテーブルを結合する例
 -------------------------
 
-「どのクラスの誰が、どのテストで、どの教科で何点取ったか」を全部まとめて取得：
+「どのクラスの誰が、どのテストで、どの教科で何点取ったか」を全部まとめて取得します。
+
+複数テーブルの結合イメージ：
+
+.. mermaid::
+
+   graph TB
+       subgraph "結合の流れ"
+           scores[scoresテーブル<br/>中心となるテーブル]
+           students[studentsテーブル<br/>生徒情報]
+           subjects[subjectsテーブル<br/>教科情報]
+           exams[examsテーブル<br/>テスト情報]
+           classes[classesテーブル<br/>クラス情報]
+           
+           scores -->|student_id| students
+           scores -->|subject_id| subjects
+           scores -->|exam_id| exams
+           students -->|class_id| classes
+       end
+       
+       style scores fill:#ff7675
+       style students fill:#74b9ff
+       style subjects fill:#a29bfe
+       style exams fill:#fd79a8
+       style classes fill:#fdcb6e
+
+scoresテーブルを中心に、各IDで関連するテーブルを結合していきます：
 
 .. code-block:: sql
 
    SELECT 
-       classes.grade AS 学年,
-       classes.class_name AS クラス,
-       students.name AS 生徒名,
-       subjects.subject_name AS 教科,
-       exams.exam_name AS テスト名,
-       scores.score AS 点数
+       classes.grade AS "学年",
+       classes.class_name AS "クラス",
+       students.name AS "生徒名",
+       subjects.subject_name AS "教科",
+       exams.exam_name AS "テスト名",
+       scores.score AS "点数"
    FROM scores
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN subjects ON scores.subject_id = subjects.subject_id

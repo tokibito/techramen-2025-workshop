@@ -81,7 +81,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 │   ├── compose.yml
 │   └── init.sql    # 初期データ
 ├── sql/            # SQLサンプルファイル
-│   ├── basics/     # 基礎編
 │   ├── joins/      # JOIN編
 │   └── groupby/    # GROUP BY編
 ├── docs/           # ワークショップドキュメント
