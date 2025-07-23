@@ -12,3 +12,4 @@ TechRAMEN 2025 Conference SQL基礎トレーニング～JOIN、GROUP BYの使い
    02-introduction
    03-join
    04-groupby
+   05-exercises

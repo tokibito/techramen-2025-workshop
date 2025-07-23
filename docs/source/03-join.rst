@@ -1,6 +1,6 @@
-========================
+============================
 JOIN編：テーブルを結合する
-========================
+============================
 
 なぜJOINが必要か
 ================
@@ -36,16 +36,16 @@ INNER JOINの基本
            S2[student_id: 2<br/>name: 佐藤花子<br/>class_id: 1]
            S3[student_id: 3<br/>name: 鈴木一郎<br/>class_id: 2]
        end
-       
+
        subgraph "classesテーブル"
            C1[class_id: 1<br/>grade: 1<br/>class_name: A]
            C2[class_id: 2<br/>grade: 1<br/>class_name: B]
        end
-       
+
        S1 -.->|class_id = 1| C1
        S2 -.->|class_id = 1| C1
        S3 -.->|class_id = 2| C2
-       
+
        style S1 fill:#e8f4fd
        style S2 fill:#e8f4fd
        style S3 fill:#e8f4fd
@@ -58,7 +58,7 @@ INNER JOINの基本
 
 .. code-block:: sql
 
-   SELECT 
+   SELECT
        students.name AS "生徒名",
        classes.grade AS "学年",
        classes.class_name AS "クラス名"
@@ -80,7 +80,7 @@ INNER JOINの基本
 
 .. code-block:: sql
 
-   SELECT 
+   SELECT
        students.name AS "生徒名",
        subjects.subject_name AS "教科",
        scores.score AS "点数"
@@ -112,13 +112,13 @@ INNER JOINの基本
            subjects[subjectsテーブル<br/>教科情報]
            exams[examsテーブル<br/>テスト情報]
            classes[classesテーブル<br/>クラス情報]
-           
+
            scores -->|student_id| students
            scores -->|subject_id| subjects
            scores -->|exam_id| exams
            students -->|class_id| classes
        end
-       
+
        style scores fill:#ff7675
        style students fill:#74b9ff
        style subjects fill:#a29bfe
@@ -129,7 +129,7 @@ scoresテーブルを中心に、各IDで関連するテーブルを結合して
 
 .. code-block:: sql
 
-   SELECT 
+   SELECT
        classes.grade AS "学年",
        classes.class_name AS "クラス",
        students.name AS "生徒名",
