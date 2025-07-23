@@ -126,7 +126,7 @@ pip install -r requirements.txt
 make html
 ```
 
-ビルド結果は `docs/_build/html/` に出力されます。
+ビルド結果は `docs/build/html/` に出力されます。
 
 ## ライセンス
 
