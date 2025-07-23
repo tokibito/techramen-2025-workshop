@@ -63,6 +63,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 実践的な例と演習を含める
 - 各セクションに明確な学習目標を提供
 - **重要**: rstファイルは必ずUTF-8エンコーディングで作成する（日本語を含むため）
+- **重要**: 図表はMermaid記法を使用してrst内に直接記載する（sphinxcontrib-mermaid拡張を使用）
 
 ### 5. 教育のベストプラクティス
 - シンプルな概念から始めて徐々に複雑性を構築

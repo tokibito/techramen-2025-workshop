@@ -13,7 +13,10 @@ author = 'Shinya Okano'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = []
+extensions = [
+    'sphinxcontrib.mermaid',
+    'sphinx_copybutton',
+]
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -33,3 +36,7 @@ html_use_modindex = False
 html_use_index = False
 html_short_title = 'SQL基礎トレーニング'
 html_show_sourcelink = False
+
+# -- Options for Mermaid -----------------------------------------------------
+# Mermaid設定
+mermaid_version = "10.6.1"
