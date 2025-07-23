@@ -101,7 +101,10 @@ docker compose up -d
 ## 講師情報
 
 **tokibito**
-- Pythonエンジニア
+- Python・Djangoエンジニア
+   - [GitHub](https://github.com/tokibito)
+   - [X](https://x.com/tokibito)
+   - [Web](https://nullpobug.com/)
 
 ## ドキュメントのビルド
 
@@ -115,7 +118,7 @@ source venv/bin/activate  # Windowsの場合は venv\Scripts\activate
 
 2. 必要なパッケージのインストール
 ```bash
-pip install -r docs/requirements.txt
+pip install -r requirements.txt
 ```
 
 3. ドキュメントのビルド
