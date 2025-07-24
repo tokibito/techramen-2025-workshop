@@ -13,9 +13,14 @@ author = 'Shinya Okano'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
+import sys
+import os
+sys.path.insert(0, os.path.abspath('_ext'))
+
 extensions = [
     'sphinxcontrib.mermaid',
     'sphinx_copybutton',
+    'japanese_sql',  # カスタム拡張: 日本語SQLの改善
 ]
 
 templates_path = ['_templates']
@@ -40,3 +45,18 @@ html_show_sourcelink = False
 # -- Options for Mermaid -----------------------------------------------------
 # Mermaid設定
 mermaid_version = "10.6.1"
+
+# -- Options for Pygments (syntax highlighting) -------------------------------
+# Pygments設定
+pygments_style = 'default'
+highlight_language = 'sql'
+
+# コードブロックのオプション
+highlight_options = {
+    'stripall': False,  # 改行を保持
+    'stripnl': False,   # 末尾の改行を保持
+}
+
+# Sphinxのハイライト設定
+# 日本語を含むSQLコードでエラーが発生した場合、自動的にrelaxedモードを使用
+suppress_warnings = []  # highlighting_failureの警告は表示するが、relaxedモードは有効

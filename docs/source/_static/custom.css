@@ -23,3 +23,51 @@
     text-align: center;
   }
 }
+
+/* SQL コードブロックのスタイル改善 */
+.highlight-sql {
+  /* 日本語文字を含むコードの表示を改善 */
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace, sans-serif;
+  line-height: 1.5;
+}
+
+.highlight-sql .s1, .highlight-sql .s2 {
+  /* 文字列リテラル内の日本語表示を改善 */
+  unicode-bidi: isolate;
+}
+
+.highlight-sql .c1 {
+  /* コメント内の日本語表示を改善 */
+  unicode-bidi: isolate;
+  font-style: normal;
+  opacity: 0.8;
+}
+
+.highlight-sql .n {
+  /* 識別子（日本語テーブル名・カラム名など）のスタイル */
+  color: #333;
+  font-weight: normal;
+}
+
+/* エラー表示の無効化（万が一エラークラスが残った場合の対策） */
+.highlight-sql .err {
+  color: inherit;
+  background-color: transparent;
+  border: none;
+}
+
+/* コードブロック全体のスタイル */
+div.highlight pre {
+  /* 横スクロールを防ぐ */
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* 大画面でのコードブロック */
+@media only screen and (min-width: 768px) {
+  div.highlight pre {
+    white-space: pre;
+    word-wrap: normal;
+    overflow-x: auto;
+  }
+}
