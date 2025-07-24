@@ -57,6 +57,16 @@ docker-compose up -d
 - Email: admin@example.com
 - Password: admin123
 
+**注意**: データベース接続時にパスワード（workshop123）の入力を求められます。
+
+4. pgAdminを日本語表示に切り替える（任意）
+- ログイン後、右上のユーザーアイコンをクリック
+- 「Preferences」を選択
+- 左メニューから「Miscellaneous」→「User Language」を選択
+- 「User Language」のドロップダウンから「日本語」を選択
+- 「Save」ボタンをクリック
+- ページをリロードすると日本語表示に切り替わります
+
 ## サンプルデータについて
 
 中学校の成績管理システムを模したデータを使用します：
