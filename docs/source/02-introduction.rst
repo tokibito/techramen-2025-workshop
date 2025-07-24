@@ -10,7 +10,7 @@
 pgAdminを開いて、以下の情報でログインしてください：
 
 * **URL**: （当日お知らせします）
-* **Email**: admin@workshop.local
+* **Email**: admin@example.com
 * **Password**: admin123
 
 ログインできたら、左側のツリーから「workshop_db」を探してみてください。

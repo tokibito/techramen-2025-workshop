@@ -2,6 +2,9 @@
 -- TechRAMEN 2025 SQLワークショップ用
 -- テーマ：中学校の成績管理システム
 
+-- workshop_dbデータベースに接続
+\c workshop_db
+
 -- スキーマの作成
 CREATE SCHEMA IF NOT EXISTS workshop;
 

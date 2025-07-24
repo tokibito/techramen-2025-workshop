@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -16,7 +14,7 @@ services:
     networks:
       - workshop_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U workshop"]
+      test: ["CMD-SHELL", "pg_isready -U workshop -d workshop_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -25,9 +23,10 @@ services:
     image: dpage/pgadmin4:latest
     container_name: workshop_pgadmin
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@workshop.local
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin123
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_DEFAULT_LANGUAGE: '"ja"'
     ports:
       - "8080:80"
     volumes:

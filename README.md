@@ -54,7 +54,7 @@ docker-compose up -d
 
 3. pgAdminへのアクセス
 - URL: http://localhost:8080
-- Email: admin@workshop.local
+- Email: admin@example.com
 - Password: admin123
 
 ## サンプルデータについて
