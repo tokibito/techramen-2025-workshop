@@ -16,8 +16,12 @@ pgAdminを開いて、以下の情報でログインしてください：
 アクセスできたら、左側のツリーから「workshop_db」を探してみてください。
 
 .. note::
-   データベースに接続する際、パスワード（workshop123）の入力を求められます。
+   データベースに接続する際、パスワード（workshop123）の入力を求められる場合があります。
    「パスワードを保存」にチェックを入れると、次回以降の入力を省略できます。
+
+.. important::
+   今回の環境は一時的な利用となるため、作成したSQLクエリは各自テキストエディタ等でメモを取って保存しておくことをおすすめします。
+   ワークショップ終了後も復習に活用できます。
 
 今日使うデータベース
 ====================
@@ -62,30 +66,30 @@ pgAdminを開いて、以下の情報でログインしてください：
        students ||--o{ scores : "1対多"
        subjects ||--o{ scores : "1対多"
        exams ||--o{ scores : "1対多"
-       
+
        classes {
            int class_id PK "クラスID"
            int grade "学年"
            string class_name "クラス名"
        }
-       
+
        students {
            int student_id PK "生徒ID"
            string name "氏名"
            int class_id FK "クラスID"
        }
-       
+
        subjects {
            int subject_id PK "教科ID"
            string subject_name "教科名"
        }
-       
+
        exams {
            int exam_id PK "テストID"
            string exam_name "テスト名"
            date exam_date "実施日"
        }
-       
+
        scores {
            int score_id PK "成績ID"
            int student_id FK "生徒ID"
