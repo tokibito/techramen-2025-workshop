@@ -7,7 +7,7 @@ JOIN編：テーブルを結合する
 
 前章で見たように、データベースでは情報を複数のテーブルに分けて管理しています。
 
-例えば「2年B組の田中さんの数学の点数」を知りたいとき、以下の情報が必要です：
+例えば「2年2組の田中さんの数学の点数」を知りたいとき、以下の情報が必要です：
 
 * 生徒の名前（studentsテーブル）
 * クラス名（classesテーブル）
@@ -32,14 +32,14 @@ INNER JOINの基本
 
    graph LR
        subgraph "studentsテーブル"
-           S1[student_id: 1<br/>name: 山田太郎<br/>class_id: 1]
-           S2[student_id: 2<br/>name: 佐藤花子<br/>class_id: 1]
-           S3[student_id: 3<br/>name: 鈴木一郎<br/>class_id: 2]
+           S1[student_id: 1<br/>last_name: 青木<br/>first_name: 陽太<br/>class_id: 1]
+           S2[student_id: 2<br/>last_name: 石田<br/>first_name: さくら<br/>class_id: 1]
+           S3[student_id: 3<br/>last_name: 上田<br/>first_name: 健太<br/>class_id: 1]
        end
 
        subgraph "classesテーブル"
-           C1[class_id: 1<br/>grade: 1<br/>class_name: A]
-           C2[class_id: 2<br/>grade: 1<br/>class_name: B]
+           C1[class_id: 1<br/>grade: 1<br/>class_name: 1年1組]
+           C2[class_id: 2<br/>grade: 1<br/>class_name: 1年2組]
        end
 
        S1 -.->|class_id = 1| C1
@@ -59,12 +59,12 @@ INNER JOINの基本
 .. code-block:: sql
 
    SELECT
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        classes.grade AS "学年",
        classes.class_name AS "クラス名"
    FROM students
    INNER JOIN classes ON students.class_id = classes.class_id
-   ORDER BY classes.grade, classes.class_name, students.name
+   ORDER BY classes.grade, classes.class_name, students.last_name, students.first_name
    LIMIT 10;
 
 このクエリのポイント：
@@ -81,14 +81,14 @@ INNER JOINの基本
 .. code-block:: sql
 
    SELECT
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        subjects.subject_name AS "教科",
        scores.score AS "点数"
    FROM scores
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN subjects ON scores.subject_id = subjects.subject_id
    WHERE scores.exam_id = 1  -- 1学期中間テスト
-   ORDER BY students.name, subjects.subject_id
+   ORDER BY students.last_name, students.first_name, subjects.subject_id
    LIMIT 15;
 
 複数テーブルの結合
@@ -132,7 +132,7 @@ scoresテーブルを中心に、各IDで関連するテーブルを結合して
    SELECT
        classes.grade AS "学年",
        classes.class_name AS "クラス",
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        subjects.subject_name AS "教科",
        exams.exam_name AS "テスト名",
        scores.score AS "点数"
@@ -143,7 +143,7 @@ scoresテーブルを中心に、各IDで関連するテーブルを結合して
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE classes.grade = 2  -- 2年生のみ
      AND exams.exam_id = 1  -- 1学期中間テスト
-   ORDER BY classes.class_name, students.name, subjects.subject_id;
+   ORDER BY classes.class_name, students.last_name, students.first_name, subjects.subject_id;
 
 このように、JOINを使うことで複数のテーブルから必要な情報を効率的に取得できます。
 
@@ -152,7 +152,7 @@ scoresテーブルを中心に、各IDで関連するテーブルを結合して
 
 以下の問題にチャレンジしてみてください：
 
-**演習1**: 1年A組の生徒一覧を取得してください（生徒名のみ）
+**演習1**: 1年1組の生徒一覧を取得してください（生徒名のみ）
 
 .. code-block:: sql
 

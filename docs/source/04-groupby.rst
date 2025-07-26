@@ -50,22 +50,22 @@ GROUP BYの動作イメージ：
 
    graph TD
        subgraph "元データ"
-           D1[1年A組 山田 80点]
-           D2[1年A組 佐藤 75点]
-           D3[1年A組 鈴木 85点]
-           D4[1年B組 田中 90点]
-           D5[1年B組 高橋 85点]
-           D6[1年B組 伊藤 80点]
+           D1[1年1組 青木 80点]
+           D2[1年1組 石田 75点]
+           D3[1年1組 上田 85点]
+           D4[1年2組 佐々木 90点]
+           D5[1年2組 島田 85点]
+           D6[1年2組 杉山 80点]
        end
        
        subgraph "GROUP BY classes.class_id"
-           G1[1年A組グループ<br/>80, 75, 85]
-           G2[1年B組グループ<br/>90, 85, 80]
+           G1[1年1組グループ<br/>80, 75, 85]
+           G2[1年2組グループ<br/>90, 85, 80]
        end
        
        subgraph "集計結果"
-           R1[1年A組 平均: 80.0]
-           R2[1年B組 平均: 85.0]
+           R1[1年1組 平均: 80.0]
+           R2[1年2組 平均: 85.0]
        end
        
        D1 --> G1
@@ -135,7 +135,7 @@ GROUP BYの動作イメージ：
 .. code-block:: sql
 
    SELECT 
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        classes.grade AS "学年",
        classes.class_name AS "クラス",
        SUM(scores.score) AS "合計点"
@@ -143,7 +143,7 @@ GROUP BYの動作イメージ：
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE scores.exam_id = 1
-   GROUP BY students.student_id, students.name, classes.class_id, classes.grade, classes.class_name
+   GROUP BY students.student_id, students.last_name, students.first_name, classes.class_id, classes.grade, classes.class_name
    ORDER BY SUM(scores.score) DESC
    LIMIT 10;
 
@@ -155,12 +155,12 @@ HAVINGで集計結果を絞り込む
 .. code-block:: sql
 
    SELECT 
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        AVG(scores.score) AS "平均点"
    FROM scores
    INNER JOIN students ON scores.student_id = students.student_id
    WHERE scores.exam_id = 1
-   GROUP BY students.student_id, students.name
+   GROUP BY students.student_id, students.last_name, students.first_name
    HAVING AVG(scores.score) >= 70
    ORDER BY AVG(scores.score) DESC;
 
@@ -183,24 +183,24 @@ HAVINGで集計結果を絞り込む
 
    graph TD
        subgraph "元データ（一部）"
-           D1[1年A組 国語 80点]
-           D2[1年A組 国語 75点]
-           D3[1年A組 数学 85点]
-           D4[1年A組 数学 90点]
-           D5[1年B組 国語 70点]
-           D6[1年B組 国語 80点]
+           D1[1年1組 国語 80点]
+           D2[1年1組 国語 75点]
+           D3[1年1組 数学 85点]
+           D4[1年1組 数学 90点]
+           D5[1年2組 国語 70点]
+           D6[1年2組 国語 80点]
        end
        
        subgraph "GROUP BY class_id, subject_id"
-           G1[1年A組・国語<br/>80, 75]
-           G2[1年A組・数学<br/>85, 90]
-           G3[1年B組・国語<br/>70, 80]
+           G1[1年1組・国語<br/>80, 75]
+           G2[1年1組・数学<br/>85, 90]
+           G3[1年2組・国語<br/>70, 80]
        end
        
        subgraph "集計結果"
-           R1[1年A組 国語 平均: 77.5]
-           R2[1年A組 数学 平均: 87.5]
-           R3[1年B組 国語 平均: 75.0]
+           R1[1年1組 国語 平均: 77.5]
+           R2[1年1組 数学 平均: 87.5]
+           R3[1年2組 国語 平均: 75.0]
        end
        
        D1 --> G1

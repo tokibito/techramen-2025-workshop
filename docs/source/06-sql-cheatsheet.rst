@@ -66,19 +66,19 @@ WHERE句（条件指定）
 .. code-block:: sql
 
    -- 部分一致（%は任意の0文字以上）
-   SELECT * FROM students WHERE name LIKE '田中%';
-   SELECT * FROM students WHERE name LIKE '%子';
-   SELECT * FROM students WHERE name LIKE '%田%';
+   SELECT * FROM students WHERE last_name LIKE '田中%';
+   SELECT * FROM students WHERE first_name LIKE '%子';
+   SELECT * FROM students WHERE last_name LIKE '%田%';
 
    -- 文字数指定（_は任意の1文字）
-   SELECT * FROM students WHERE name LIKE '田_';
+   SELECT * FROM students WHERE last_name LIKE '田_';
 
    -- 大文字小文字を区別しない（ILIKE）
-   SELECT * FROM students WHERE name ILIKE 'tanaka%';
+   SELECT * FROM students WHERE last_name ILIKE 'tanaka%';
 
    -- 正規表現（~演算子）
-   SELECT * FROM students WHERE name ~ '^田中';  -- 田中で始まる
-   SELECT * FROM students WHERE name ~ '子$';    -- 子で終わる
+   SELECT * FROM students WHERE last_name ~ '^田中';  -- 田中で始まる
+   SELECT * FROM students WHERE first_name ~ '子$';    -- 子で終わる
 
 複数条件の組み合わせ
 ~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +86,9 @@ WHERE句（条件指定）
 .. code-block:: sql
 
    -- AND（両方満たす）
-   SELECT * FROM students WHERE grade = 1 AND class = 'A';
+   SELECT * FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.grade = 1 AND c.class_name = '1年1組';
 
    -- OR（どちらか満たす）
    SELECT * FROM students WHERE grade = 1 OR grade = 2;
@@ -95,8 +97,9 @@ WHERE句（条件指定）
    SELECT * FROM students WHERE NOT grade = 3;
 
    -- 複雑な条件（括弧で優先順位を明確に）
-   SELECT * FROM students 
-   WHERE (grade = 1 OR grade = 2) AND class = 'A';
+   SELECT * FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE (c.grade = 1 OR c.grade = 2) AND c.class_name LIKE '%1組';
 
 ORDER BY（並び替え）
 --------------------
@@ -111,8 +114,9 @@ ORDER BY（並び替え）
    SELECT * FROM scores ORDER BY score DESC;
 
    -- 複数キーでの並び替え
-   SELECT * FROM students 
-   ORDER BY grade ASC, class ASC, student_number ASC;
+   SELECT s.*, c.grade, c.class_name FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   ORDER BY c.grade ASC, c.class_name ASC, s.student_number ASC;
 
    -- NULLの扱い（PostgreSQL固有）
    SELECT * FROM students 
@@ -166,8 +170,10 @@ PostgreSQL固有の集計関数
 .. code-block:: sql
 
    -- 文字列の集約
-   SELECT string_agg(name, ', ' ORDER BY student_number) 
-   FROM students WHERE grade = 1;
+   SELECT string_agg(last_name || ' ' || first_name, ', ' ORDER BY student_number) 
+   FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.grade = 1;
 
    -- 配列への集約
    SELECT array_agg(score ORDER BY score DESC) 
@@ -195,10 +201,11 @@ GROUP BY（グループ化）
    GROUP BY subject_id;
 
    -- 複数カラムでグループ化
-   SELECT grade, class, COUNT(*) as "student_count"
-   FROM students
-   GROUP BY grade, class
-   ORDER BY grade, class;
+   SELECT c.grade, c.class_name, COUNT(*) as "student_count"
+   FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   GROUP BY c.class_id, c.grade, c.class_name
+   ORDER BY c.grade, c.class_name;
 
    -- 集計結果に別名を付ける
    SELECT 
@@ -247,29 +254,31 @@ PostgreSQL便利な関数
 .. code-block:: sql
 
    -- 文字列結合（||演算子）
-   SELECT grade || '年' || class || '組' as "class_name" FROM students;
+   SELECT c.grade || '年' || c.class_number || '組' as "class_name" FROM classes c;
+   SELECT last_name || ' ' || first_name as "full_name" FROM students;
 
    -- CONCAT関数
-   SELECT CONCAT(grade, '年', class, '組') as "class_name" FROM students;
+   SELECT CONCAT(c.grade, '年', c.class_number, '組') as "class_name" FROM classes c;
+   SELECT CONCAT(last_name, ' ', first_name) as "full_name" FROM students;
 
    -- 文字列の長さ（日本語対応）
-   SELECT name, LENGTH(name) as "byte_length" FROM students;
-   SELECT name, CHAR_LENGTH(name) as "char_length" FROM students;
+   SELECT last_name, LENGTH(last_name) as "byte_length" FROM students;
+   SELECT last_name, CHAR_LENGTH(last_name) as "char_length" FROM students;
 
    -- 大文字・小文字変換
-   SELECT UPPER(class), LOWER(class) FROM students;
+   SELECT UPPER(class_name), LOWER(class_name) FROM classes;
 
    -- 文字列の切り出し
-   SELECT SUBSTRING(name FROM 1 FOR 1) as "first_char" FROM students;
-   SELECT LEFT(name, 1) as "first_char" FROM students;
-   SELECT RIGHT(name, 1) as "last_char" FROM students;
+   SELECT SUBSTRING(last_name FROM 1 FOR 1) as "first_char" FROM students;
+   SELECT LEFT(last_name, 1) as "first_char" FROM students;
+   SELECT RIGHT(first_name, 1) as "last_char" FROM students;
 
    -- 空白の除去
-   SELECT TRIM(name) FROM students;
-   SELECT LTRIM(name), RTRIM(name) FROM students;
+   SELECT TRIM(last_name) FROM students;
+   SELECT LTRIM(last_name), RTRIM(last_name) FROM students;
 
    -- 文字列の置換
-   SELECT REPLACE(name, '田', '山') FROM students;
+   SELECT REPLACE(last_name, '田', '山') FROM students;
 
    -- 文字列の分割
    SELECT SPLIT_PART('2025-01-24', '-', 1) as "year";
@@ -377,13 +386,14 @@ CASE式
 
    -- 学年の表示
    SELECT 
-       name,
-       CASE grade
+       last_name || ' ' || first_name as "name",
+       CASE c.grade
            WHEN 1 THEN '1年生'
            WHEN 2 THEN '2年生'
            WHEN 3 THEN '3年生'
        END as "grade_name"
-   FROM students;
+   FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id;
 
 COALESCE（NULL対応）
 ~~~~~~~~~~~~~~~~~~~~
@@ -392,12 +402,12 @@ COALESCE（NULL対応）
 
    -- NULLの場合にデフォルト値を使用
    SELECT 
-       name,
-       COALESCE(remarks, '特記事項なし') as "remarks"
-   FROM students;
+       last_name || ' ' || first_name as "name",
+       COALESCE(s.student_number, '番号未設定') as "student_number"
+   FROM students s;
 
    -- 複数の値から最初の非NULL値を取得
-   SELECT COALESCE(remarks, email, '情報なし') FROM students;
+   SELECT COALESCE(gender, '未設定') FROM students;
 
 NULLIF
 ~~~~~~
@@ -461,17 +471,18 @@ NULLIF
 
    -- 学年・クラス別の成績順位
    SELECT 
-       st.name,
-       st.grade,
-       st.class,
+       st.last_name || ' ' || st.first_name as "name",
+       c.grade,
+       c.class_name,
        AVG(sc.score) as "avg_score",
        RANK() OVER (
-           PARTITION BY st.grade, st.class 
+           PARTITION BY c.grade, c.class_name 
            ORDER BY AVG(sc.score) DESC
        ) as "class_rank"
    FROM students st
    JOIN scores sc ON st.student_id = sc.student_id
-   GROUP BY st.student_id, st.name, st.grade, st.class;
+   JOIN classes c ON st.class_id = c.class_id
+   GROUP BY st.student_id, st.last_name, st.first_name, c.grade, c.class_name;
 
 移動集計
 ~~~~~~~~
@@ -546,7 +557,7 @@ WITH句（共通テーブル式）
        GROUP BY student_id
    )
    SELECT 
-       s.name,
+       s.last_name || ' ' || s.first_name as "name",
        sa.avg_score
    FROM students s
    JOIN student_averages sa ON s.student_id = sa.student_id
@@ -566,7 +577,7 @@ WITH句（共通テーブル式）
        GROUP BY student_id
    )
    SELECT 
-       s.name,
+       s.last_name || ' ' || s.first_name as "name",
        sc.high_score_count
    FROM students s
    JOIN student_counts sc ON s.student_id = sc.student_id
@@ -578,14 +589,22 @@ UNION/INTERSECT/EXCEPT
 .. code-block:: sql
 
    -- 結果の結合（重複除去）
-   SELECT name FROM students WHERE grade = 1
+   SELECT last_name || ' ' || first_name as "name" FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.grade = 1
    UNION
-   SELECT name FROM students WHERE class = 'A';
+   SELECT last_name || ' ' || first_name as "name" FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.class_name = '1年1組';
 
    -- 結果の結合（重複含む）
-   SELECT name FROM students WHERE grade = 1
+   SELECT last_name || ' ' || first_name as "name" FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.grade = 1
    UNION ALL
-   SELECT name FROM students WHERE class = 'A';
+   SELECT last_name || ' ' || first_name as "name" FROM students s
+   INNER JOIN classes c ON s.class_id = c.class_id
+   WHERE c.class_name = '1年1組';
 
    -- 共通部分
    SELECT student_id FROM scores WHERE subject_id = 1 AND score >= 80

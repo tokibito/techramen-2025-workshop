@@ -8,22 +8,22 @@
 JOIN編の演習問題
 ================
 
-演習1：1年A組の生徒一覧
+演習1：1年1組の生徒一覧
 ------------------------
 
-**問題**: 1年A組の生徒一覧を取得してください（生徒名のみ）
+**問題**: 1年1組の生徒一覧を取得してください（生徒名のみ）
 
 **解答**:
 
 .. code-block:: sql
 
    SELECT 
-       students.name AS "生徒名"
+       students.last_name || ' ' || students.first_name AS "生徒名"
    FROM students
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE classes.grade = 1 
-     AND classes.class_name = 'A'
-   ORDER BY students.name;
+     AND classes.class_name = '1年1組'
+   ORDER BY students.last_name, students.first_name;
 
 **解説**:
 
@@ -49,7 +49,7 @@ JOIN編の演習問題
 .. code-block:: sql
 
    SELECT 
-       students.name AS "生徒名",
+       students.last_name || ' ' || students.first_name AS "生徒名",
        classes.grade AS "学年",
        classes.class_name AS "クラス",
        scores.score AS "数学の点数"
@@ -59,7 +59,7 @@ JOIN編の演習問題
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE subjects.subject_name = '数学'
      AND scores.score >= 80
-   ORDER BY classes.grade, classes.class_name, students.name;
+   ORDER BY classes.grade, classes.class_name, students.last_name, students.first_name;
 
 **解説**:
 
