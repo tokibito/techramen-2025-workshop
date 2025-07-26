@@ -31,6 +31,14 @@ GROUP BYは、データをグループ化して集計するための機能です
    WHERE subjects.subject_name = '数学'
      AND scores.exam_id = 1;
 
+このクエリでは **GROUP BYを省略** しています。GROUP BYを省略すると：
+
+* テーブル全体を1つのグループとして扱う
+* 結果は必ず1行になる
+* SELECTには集計関数のみ指定可能（通常のカラムは指定できない）
+
+つまり、「全体の合計」や「全体の平均」を求める場合はGROUP BYは不要です。
+
 主な集計関数：
 
 * ``COUNT()`` - 件数を数える
@@ -97,7 +105,7 @@ GROUP BYの動作イメージ：
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE scores.exam_id = 1  -- 1学期中間テスト
-   GROUP BY classes.class_id, classes.grade, classes.class_name
+   GROUP BY classes.class_id
    ORDER BY classes.grade, classes.class_name;
 
 ポイント：
@@ -143,7 +151,7 @@ GROUP BYの動作イメージ：
    INNER JOIN students ON scores.student_id = students.student_id
    INNER JOIN classes ON students.class_id = classes.class_id
    WHERE scores.exam_id = 1
-   GROUP BY students.student_id, students.last_name, students.first_name, classes.class_id, classes.grade, classes.class_name
+   GROUP BY students.student_id, classes.class_id
    ORDER BY SUM(scores.score) DESC
    LIMIT 10;
 
@@ -229,8 +237,8 @@ HAVINGで集計結果を絞り込む
    INNER JOIN subjects ON scores.subject_id = subjects.subject_id
    WHERE scores.exam_id = 1
    GROUP BY 
-       classes.class_id, classes.grade, classes.class_name,
-       subjects.subject_id, subjects.subject_name
+       classes.class_id,
+       subjects.subject_id
    ORDER BY 
        classes.grade, classes.class_name, subjects.subject_id;
 
